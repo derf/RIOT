@@ -28,17 +28,18 @@
  * @brief   Keep track of the interrupt context
  * @{
  */
-static uart_rx_cb_t ctx_rx_cb;
-static void *ctx_isr_arg;
+//static uart_rx_cb_t ctx_rx_cb;
+//static void *ctx_isr_arg;
 /** @} */
 
-static int init_base(uart_t uart, uint32_t baudrate);
+//static int init_base(uart_t uart, uint32_t baudrate);
 
 /* per default, we use the legacy MSP430 USART module for UART functionality */
 #ifndef UART_USE_USCI
 
 int uart_init(uart_t uart, uint32_t baudrate, uart_rx_cb_t rx_cb, void *arg)
 {
+#if 0
     int res = init_base(uart, baudrate);
     if (res != UART_OK) {
         return res;
@@ -52,9 +53,11 @@ int uart_init(uart_t uart, uint32_t baudrate, uart_rx_cb_t rx_cb, void *arg)
     UART_IF &= ~(UART_IE_RX_BIT);
     UART_IF |=  (UART_IE_TX_BIT);
     UART_IE |=  (UART_IE_RX_BIT);
+#endif
     return UART_OK;
 }
 
+#if 0
 static int init_base(uart_t uart, uint32_t baudrate)
 {
     if (uart != 0) {
@@ -89,9 +92,11 @@ static int init_base(uart_t uart, uint32_t baudrate)
     dev->CTL &= ~(USART_CTL_SWRST);
     return UART_OK;
 }
+#endif
 
 void uart_write(uart_t uart, const uint8_t *data, size_t len)
 {
+#if 0
     (void)uart;
     msp_usart_t *dev = UART_BASE;
 
@@ -99,18 +104,24 @@ void uart_write(uart_t uart, const uint8_t *data, size_t len)
         while (!(dev->TCTL & USART_TCTL_TXEPT)) {}
         dev->TXBUF = data[i];
     }
+#endif
 }
 
 void uart_poweron(uart_t uart)
 {
+#if 0
     UART_ME |= UART_ME_BITS;
+#endif
 }
 
 void uart_poweroff(uart_t uart)
 {
+#if 0
     UART_ME &= ~(UART_ME_BITS);
+#endif
 }
 
+#if 0
 ISR(UART_RX_ISR, isr_uart_0_rx)
 {
     __enter_isr();
@@ -125,6 +136,7 @@ ISR(UART_RX_ISR, isr_uart_0_rx)
 
     __exit_isr();
 }
+#endif
 
 /* we use alternative UART code in case the board used the USCI module for UART
  * instead of the (older) USART module */
@@ -132,6 +144,7 @@ ISR(UART_RX_ISR, isr_uart_0_rx)
 
 int uart_init(uart_t uart, uint32_t baudrate, uart_rx_cb_t rx_cb, void *arg)
 {
+#if 0
     if (init_base(uart, baudrate) < 0) {
         return -1;
     }
@@ -144,11 +157,13 @@ int uart_init(uart_t uart, uint32_t baudrate, uart_rx_cb_t rx_cb, void *arg)
     UART_IF |=  (UART_IE_TX_BIT);
     UART_IE |=  (UART_IE_RX_BIT);
     UART_IE &= ~(UART_IE_TX_BIT);
+#endif
     return 0;
 }
 
 static int init_base(uart_t uart, uint32_t baudrate)
 {
+#if 0
     if (uart != 0) {
         return -1;
     }
@@ -176,17 +191,20 @@ static int init_base(uart_t uart, uint32_t baudrate)
     UART_TX_PORT->DIR |= UART_TX_PIN;
     /* releasing the software reset bit starts the UART */
     dev->ACTL1 &= ~(USCI_ACTL1_SWRST);
+#endif
     return 0;
 }
 
 void uart_write(uart_t uart, const uint8_t *data, size_t len)
 {
+#if 0
     (void)uart;
 
     for (size_t i = 0; i < len; i++) {
         while (!(UART_IF & UART_IE_TX_BIT)) {}
         UART_BASE->ATXBUF = data[i];
     }
+#endif
 }
 
 void uart_poweron(uart_t uart)
@@ -201,6 +219,7 @@ void uart_poweroff(uart_t uart)
     /* n/a */
 }
 
+#if 0
 ISR(UART_RX_ISR, isr_uart_0_rx)
 {
     __enter_isr();
@@ -219,5 +238,6 @@ ISR(UART_RX_ISR, isr_uart_0_rx)
 
     __exit_isr();
 }
+#endif
 
 #endif
